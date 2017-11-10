@@ -2,5 +2,5 @@
 
 Dev help.
 
-Run backend: node server.js
+Run backend: node server.js or nodemon server.js
 Run frontend: ng server --open
