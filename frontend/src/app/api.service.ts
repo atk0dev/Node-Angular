@@ -5,6 +5,7 @@ import { Injectable, Inject } from '@angular/core';
 export class ApiService {
 
     messages = [];
+    users = [];
 
     constructor (private http: Http) {
     }
@@ -15,9 +16,9 @@ export class ApiService {
         });
     }
 
-    sendUserRegistration(registerData) {
-        this.http.post('http://localhost:3000/register', registerData).subscribe(res => {
-            
+    getUsers() {
+        this.http.get('http://localhost:3000/users').subscribe(res => {
+            this.users = res.json();
         });
     }
 }

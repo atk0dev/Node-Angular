@@ -3,36 +3,33 @@ import { AuthService } from './auth.service';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
-  selector: 'register',
+  selector: 'login',
   template: `
     <mat-card>
     <mat-card-header>
         <mat-card-title>
-            <h4>Register new user</h4>
+            <h4>Login user</h4>
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <form class="register-form">
         <mat-form-field class="input-full-width">
-            <input [(ngModel)]="registerData.email" name="email" matInput placeholder="Email" type="email">
+            <input [(ngModel)]="loginData.email" name="email" matInput placeholder="Email" type="email">
         </mat-form-field>
         <mat-form-field class="input-full-width">
-            <input [(ngModel)]="registerData.password" name="password" matInput placeholder="Password" type="password">
+            <input [(ngModel)]="loginData.password" name="password" matInput placeholder="Password" type="password">
         </mat-form-field>
 
-        <mat-form-field class="input-full-width">
-        <textarea matInput placeholder="Leave a comment"></textarea>
-        </mat-form-field>
-            <button (click)="post()" mat-raised-button color="primary">Register</button>
+            <button (click)="post()" mat-raised-button color="primary">Login</button>
         </form>
     </mat-card-content>
   </mat-card>
   `,
   styleUrls: ['register.component.css'],
 })
-export class RegisterComponent implements OnInit {
+export class LoginComponent implements OnInit {
 
-    registerData = {};
+    loginData = {};
 
   constructor (private authService: AuthService) {
   }
@@ -41,8 +38,7 @@ export class RegisterComponent implements OnInit {
   }
 
   post() {
-      console.log(this.registerData);
-      this.authService.registerUser(this.registerData);
+      this.authService.loginUser(this.loginData);
   }
 
 }

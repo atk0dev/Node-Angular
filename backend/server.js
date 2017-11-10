@@ -2,6 +2,8 @@ var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var jwt = require('jwt-simple');
+
 
 var app = express();
 
@@ -28,6 +30,46 @@ app.post('/register', (req, res) => {
         res.sendStatus(200);
     });
 });
+
+
+app.post('/login', (req, res) => {
+    var userData = req.body;
+
+    var user = User.findOne({ email: userData.email }, (err, user) => {
+        console.log(user);
+
+        if (!user) {
+            return res.status(401).send({ message: 'Email or Password invalid' });
+        }
+
+        if (userData.password != user.password) {
+            return res.status(401).send({ message: 'Email or Password invalid' });
+        }
+
+        var payload = {};
+
+        // need to get secret from config file
+        var token = jwt.encode(payload, '123');
+
+        res.status(200).send({ token });
+    });
+
+
+
+});
+
+app.get('/users', (req, res) => {
+    User.find({}, "-password -__v", (err, users) => {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+        }
+
+        res.send(users);
+    });
+
+});
+
 
 
 mongoose.connect('mongodb://test:test@ds157185.mlab.com:57185/demo123', { useMongoClient: true }, (err) => {
