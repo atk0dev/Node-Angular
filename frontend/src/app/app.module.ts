@@ -1,23 +1,37 @@
-import { MessagesComponent } from './messages.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpModule } from '@angular/http';
+import { RouterModule } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+
+import {MatButtonModule, MatButton, MatCardModule, MatToolbarModule, MatInputModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
+import { MessagesComponent } from './messages.component';
 import { ApiService } from './api.service';
-import { HttpModule } from '@angular/http';
+import { RegisterComponent } from './register.component';
 
-import {MatButtonModule, MatButton, MatCardModule} from '@angular/material';
+const routes = [
+  { path: 'register', component: RegisterComponent }
+];
 
 @NgModule({
   declarations: [
     AppComponent,
-    MessagesComponent
+    MessagesComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     HttpModule,
+    FormsModule,
+    RouterModule.forRoot(routes),
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatToolbarModule,
+    MatInputModule,
+    BrowserAnimationsModule
   ],
   providers: [ApiService],
   bootstrap: [AppComponent]
