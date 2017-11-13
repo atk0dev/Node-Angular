@@ -87,6 +87,6 @@ mongoose.connect('mongodb://test:test@ds157185.mlab.com:57185/demo123', { useMon
 
 app.use('/auth', auth.router);
 
-app.listen(3000, () => {
-    console.log('started on port ' + 3000);
+app.listen(process.env.PORT || 3000, () => {
+    console.log('app started');
 });
