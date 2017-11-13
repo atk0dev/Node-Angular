@@ -2,6 +2,7 @@ var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var jwt = require('jwt-simple');
 
 var app = express();
 
@@ -16,24 +17,30 @@ mongoose.Promise = Promise;
 app.use(cors());
 app.use(bodyParser.json());
 
+
 app.get('/posts/:id', async(req, res) => {
-    var auth = req.params.id;
+    var author = req.params.id;
     var posts = await Post.find({ author });
     res.send(posts);
 });
 
-app.post('/post', (req, res) => {
+app.post('/post', auth.checkAuthhenticated, (req, res) => {
+    console.log('server is going to save message: ');
+
     var postData = req.body;
-    postData.author = 'IDIDID';
+    postData.author = req.userId;
+    console.log('here is post data for message: ');
+    console.log(postData);
 
     var post = new Post(postData);
     post.save((err, result) => {
         if (err) {
-            console.error('saving post error');
-            return res.status(500).send({ message: 'saving post message' });
+            console.error('error saving post error');
+            return res.status(500).send({ message: 'error saving post message' });
         }
 
-        res.sendStatus(200);
+        console.log('New post has been saved.');
+        res.status(200).send({ newPost: post._id });
     });
 });
 
@@ -78,7 +85,7 @@ mongoose.connect('mongodb://test:test@ds157185.mlab.com:57185/demo123', { useMon
     }
 });
 
-app.use('/auth', auth);
+app.use('/auth', auth.router);
 
 app.listen(3000, () => {
     console.log('started on port ' + 3000);

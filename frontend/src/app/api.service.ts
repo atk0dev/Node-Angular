@@ -1,4 +1,5 @@
-import { Http } from '@angular/http';
+import { environment } from './../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, Inject } from '@angular/core';
 
 @Injectable()
@@ -6,25 +7,29 @@ export class ApiService {
 
     messages = [];
     users = [];
-    path = 'http://localhost:3000';
+    path = environment.path;
 
-    constructor (private http: Http) {
+    constructor (private http: HttpClient) {
     }
 
     getMessages(userId) {
-        this.http.get(this.path + '/posts/' + userId).subscribe(res => {
-            this.messages = res.json();
+        this.http.get<any>(this.path + '/posts/' + userId).subscribe(res => {
+            this.messages = res;
         });
     }
 
     postMessage(message) {
+        console.log('going to post mesage: ');
+        console.log(message);
         this.http.post(this.path + '/post', message).subscribe(res => {
+            console.log('after posting message');
+            console.log(res);
         });
     }
 
     getUsers() {
-        this.http.get(this.path +  '/users').subscribe(res => {
-            this.users = res.json();
+        this.http.get<any>(this.path +  '/users').subscribe(res => {
+            this.users = res;
         });
     }
 

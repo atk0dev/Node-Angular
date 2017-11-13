@@ -10,12 +10,12 @@ router.post('/register', (req, res) => {
     var userData = req.body;
 
     var user = new User(userData);
-    user.save((err, result) => {
+    user.save((err, newUser) => {
         if (err) {
-            console.log('saving user error');
+            return res.status(500).send({ message: 'Error saving user' });
         }
 
-        res.sendStatus(200);
+        createSendToken(res, newUser);
     });
 });
 
@@ -34,13 +34,46 @@ router.post('/login', (req, res) => {
                 return res.status(401).send({ message: 'Email or Password invalid' });
             }
 
-            var payload = {};
-            // need to get secret from config file
-            var token = jwt.encode(payload, '123');
-            res.status(200).send({ token });
+            createSendToken(res, user);
+
         });
 
     });
 });
 
-module.exports = router;
+function checkAuthhenticated(req, res, next) {
+    console.log('checking if authenticated...');
+    if (!req.header('authorization')) {
+        return res.status(401).send({ message: 'Unauthorized. Missing Auth Header' });
+    }
+
+    var token = req.header('authorization').split(' ')[1];
+
+    if (token == null || token == 'null') {
+        return res.status(401).send({ message: 'Unauthorized. Token in Auth Header is empty' });
+    }
+
+    console.log('decoding token: ' + token);
+
+    var payload = jwt.decode(token, '123');
+
+    if (!payload) {
+        return res.status(401).send({ message: 'Unauthorized. Auth Header Invalid' });
+    }
+
+    req.userId = payload.sub;
+    console.log('all ok. can continue sending message.');
+    next();
+}
+
+var auth = { router, checkAuthhenticated };
+
+function createSendToken(res, user) {
+    var payload = { sub: user._id };
+
+    // need to get secret from config file
+    var token = jwt.encode(payload, '123');
+    res.status(200).send({ token });
+}
+
+module.exports = auth;
