@@ -6,7 +6,7 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
   selector: 'app-root',
   template: `
     <mat-toolbar>
-      My App
+      <button mat-button routerLink="/">My app</button>
       <button mat-button routerLink="/users">Users</button>
       <span style="flex: 1 1 auto"></span>
       <button mat-button routerLink="/register">Register</button>

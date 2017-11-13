@@ -2,60 +2,41 @@ var express = require('express');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var jwt = require('jwt-simple');
-var bcrypt = require('bcrypt-nodejs');
 
 var app = express();
 
 var User = require('./models/User');
+var Post = require('./models/Post');
+
+var auth = require('./auth');
+
 mongoose.Promise = Promise;
 
-var posts = [{ message: 'hello' }, { message: 'world' }];
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/posts', (req, res) => {
+app.get('/posts/:id', async(req, res) => {
+    var auth = req.params.id;
+    var posts = await Post.find({ author });
     res.send(posts);
 });
 
-app.post('/register', (req, res) => {
-    var userData = req.body;
+app.post('/post', (req, res) => {
+    var postData = req.body;
+    postData.author = 'IDIDID';
 
-    var user = new User(userData);
-    user.save((err, result) => {
+    var post = new Post(postData);
+    post.save((err, result) => {
         if (err) {
-            console.log('saving user error');
+            console.error('saving post error');
+            return res.status(500).send({ message: 'saving post message' });
         }
 
         res.sendStatus(200);
     });
 });
 
-
-app.post('/login', (req, res) => {
-    var loginData = req.body;
-
-    var user = User.findOne({ email: loginData.email }, (err, user) => {
-        console.log(user);
-
-        if (!user) {
-            return res.status(401).send({ message: 'Email or Password invalid' });
-        }
-
-        bcrypt.compare(loginData.password, user.password, (err, isMatch) => {
-            if (!isMatch) {
-                return res.status(401).send({ message: 'Email or Password invalid' });
-            }
-
-            var payload = {};
-            // need to get secret from config file
-            var token = jwt.encode(payload, '123');
-            res.status(200).send({ token });
-        });
-    });
-
-});
 
 app.get('/users', (req, res) => {
     User.find({}, "-password -__v", (err, users) => {
@@ -91,13 +72,14 @@ app.get('/profile/:id', async(req, res) => {
     }
 });
 
-
-
 mongoose.connect('mongodb://test:test@ds157185.mlab.com:57185/demo123', { useMongoClient: true }, (err) => {
     if (!err) {
         console.log('Connected to database');
     }
 });
+
+app.use('/auth', auth);
+
 app.listen(3000, () => {
     console.log('started on port ' + 3000);
 });
