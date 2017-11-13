@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
-import {MatButtonModule, MatButton, MatCardModule, MatToolbarModule, MatInputModule } from '@angular/material';
+import {MatButtonModule, MatButton, MatCardModule, MatToolbarModule, MatInputModule, MatListModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { MessagesComponent } from './messages.component';
@@ -14,12 +14,13 @@ import { AuthService } from './auth.service';
 import { RegisterComponent } from './register.component';
 import { LoginComponent } from './login.component';
 import { UsersComponent } from './users.component';
+import { ProfileComponent } from './profile.component';
 
 const routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'users', component: UsersComponent },
-  { path: 'profile/:id', component: UsersComponent }
+  { path: 'profile/:id', component: ProfileComponent }
 ];
 
 @NgModule({
@@ -28,7 +29,8 @@ const routes = [
     MessagesComponent,
     RegisterComponent,
     LoginComponent,
-    UsersComponent
+    UsersComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,8 @@ const routes = [
     MatCardModule,
     MatToolbarModule,
     MatInputModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatListModule
   ],
   providers: [ApiService, AuthService],
   bootstrap: [AppComponent]
